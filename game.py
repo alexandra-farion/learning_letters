@@ -62,6 +62,12 @@ def load_image(name, color_key=None):
     return image
 
 
+def load_sound(name, volume=1):
+    sound = pygame.mixer.Sound(os.path.join(sounds_folder, name))
+    sound.set_volume(volume)
+    return sound
+
+
 def terminate():
     pygame.quit()
     sys.exit()
@@ -141,11 +147,11 @@ def new():
             picture1 = random.choice(image_for_buttons_copy)
     del alphabet[image_letter]
 
-
-snd_dir = path.join(path.dirname(__file__))
-task = pygame.mixer.Sound(path.join(path.dirname(__file__), 'task.wav'))
-correct_answer = pygame.mixer.Sound(path.join(path.dirname(__file__), '++.wav'))
-wrong_answer = pygame.mixer.Sound(path.join(path.dirname(__file__), '-.wav'))
+sounds_folder = "sounds"
+# snd_dir = path.join(path.dirname(__file__))
+# task = pygame.mixer.Sound(path.join(path.dirname(__file__), 'task.wav'))
+# correct_answer = pygame.mixer.Sound(path.join(path.dirname(__file__), '++.wav'))
+# wrong_answer = pygame.mixer.Sound(path.join(path.dirname(__file__), '-.wav'))
 new()
 
 
@@ -199,10 +205,12 @@ expl_sounds = []
 for snd in ['River Flows In You.mp3', 'Yiruma - Dream A Little Dream Of Me.mp3',
             'Yiruma - It`s Your Day.mp3', 'Yiruma - Memories In My Eyes.mp3',
             'Yiruma - Dream.mp3', 'Yiruma - Because I Love You.mp3']:
-    expl_sounds.append(pygame.mixer.music.load(str(snd_dir) + "\\" + snd))
+    # expl_sounds.append(pygame.mixer.music.load(str(path.join(path.dirname(__file__))) + "\music" + "\\" + snd))
+    pygame.mixer.music.load(str(path.join(path.dirname(__file__))) + "\music" + "\\" + snd)
     pygame.mixer.music.set_volume(0.4)
-score = 0
-pygame.mixer.music.play(loops=-1)
+    pygame.mixer.music.play()
+    pygame.mixer.music.queue(str(path.join(path.dirname(__file__))) + "\music" + "\\" + 'Yiruma - Dream A Little Dream Of Me.mp3')
+
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Весёлая азбука")
@@ -226,6 +234,7 @@ pygame.mouse.set_visible(False)
 running = True
 number = 0
 start_screen()
+task = load_sound('task.wav')
 task.play()
 
 while running:
@@ -240,7 +249,7 @@ while running:
             tile2.check()
             tile3.check()
             if any(check_list):
-                correct_answer.play()
+                load_sound('++.wav').play()
                 clock.tick(400)
                 del image_for_buttons[0]
                 if len(alphabet) != 0:
@@ -249,7 +258,7 @@ while running:
                     all_sprites.update()
             else:
                 pass
-                wrong_answer.play()
+                load_sound('-.wav').play()
     fon = pygame.transform.scale(load_image('fon.png'), (WIDTH, HEIGHT))
     screen.blit(fon, (0, 0))
     if len(image_for_buttons) == 0:

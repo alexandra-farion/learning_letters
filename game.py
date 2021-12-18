@@ -148,10 +148,6 @@ def new():
     del alphabet[image_letter]
 
 sounds_folder = "sounds"
-# snd_dir = path.join(path.dirname(__file__))
-# task = pygame.mixer.Sound(path.join(path.dirname(__file__), 'task.wav'))
-# correct_answer = pygame.mixer.Sound(path.join(path.dirname(__file__), '++.wav'))
-# wrong_answer = pygame.mixer.Sound(path.join(path.dirname(__file__), '-.wav'))
 new()
 
 
@@ -201,17 +197,9 @@ class Tile(pygame.sprite.Sprite):
         self.image = work_image(self.picture)
 
 
-expl_sounds = []
-for snd in ['Yiruma - Dream A Little Dream Of Me.mp3',
-            'Yiruma - It`s Your Day.mp3', 'Yiruma - Memories In My Eyes.mp3', 'Yiruma - Because I Love You.mp3']:
-    pygame.mixer.music.load(str(path.join(path.dirname(__file__))) + "\music" + "\\" + snd)
+pygame.mixer.music.load(str(path.join(path.dirname(__file__))) + "\music\\" + 'Yiruma - Because I Love You.mp3')
 pygame.mixer.music.set_volume(0.4)
-pygame.mixer.music.play()
-pygame.mixer.music.queue(str(path.join(path.dirname(__file__))) + "\music" + "\\" + 'Yiruma - Dream A Little Dream Of Me.mp3')
-pygame.mixer.music.queue(
-    str(path.join(path.dirname(__file__))) + "\music" + "\\" + 'Yiruma - It`s Your Day.mp3')
-pygame.mixer.music.queue(
-    str(path.join(path.dirname(__file__))) + "\music" + "\\" + 'Yiruma - Memories In My Eyes.mp3')
+pygame.mixer.music.play(-1)
 
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))

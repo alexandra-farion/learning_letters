@@ -1,76 +1,14 @@
-import pygame
 import random
-import os
-import sys
 from os import path
 
+from future.moves import sys
 
-WIDTH = 1550
-HEIGHT = 900
-FPS = 60
+from material import *
+from work_with_img import *
+from work_with_sounds import *
 
 pygame.init()
 pygame.mixer.init()
-
-true_answer = 0
-new_round = False
-FPS = 50
-picture1 = ''
-picture2 = ''
-picture3 = ''
-image_letter = ''
-alphabet = {'а.png': 'а1.png', 'б.png': 'б1.png', 'в.png': 'в1.png', 'г.png': 'г1.png',
-            'д.png': 'д1.png', 'е.png': 'е1.png', 'ё.png': 'ё1.png', 'ж.png': 'ж1.png',
-            'з.png': 'з1.png', 'и.png': 'и1.png', 'й.png': 'й1.png', 'к.png': 'к1.png',
-            'л.png': 'л1.png', 'м.png': 'м1.png', 'н.png': 'н1.png', 'о.png': 'о1.png',
-            'п.png': 'п1.png', 'р.png': 'р1.png', 'с.png': 'с1.png', 'т.png': 'т1.png',
-            'у.png': 'у1.png', 'ф.png': 'ф1.png', 'х.png': 'х1.png', 'ц.png': 'ц1.png',
-            'ч.png': 'ч1.png', 'ш.png': 'ш1.png', 'щ.png': 'щ1.png', 'э.png': 'э1.png',
-            'ю.png': 'ю1.png', 'я.png': 'я1.png'}
-image_for_buttons = ['а1.png', 'б1.png',  'в1.png', 'г1.png', 'д1.png', 'е1.png', 'ё1.png', 'ж1.png',
-                     'з1.png', 'и1.png',  'й1.png', 'к1.png', 'л1.png', 'м1.png', 'н1.png',  'о1.png',
-                     'п1.png', 'р1.png',  'с1.png',  'т1.png', 'у1.png', 'ф1.png', 'х1.png',  'ц1.png',
-                     'ч1.png', 'ш1.png',  'щ1.png', 'э1.png', 'ю1.png', 'я1.png']
-image_for_buttons_copy = ['а1.png', 'б1.png',  'в1.png', 'г1.png', 'д1.png', 'е1.png', 'ё1.png', 'ж1.png',
-                          'з1.png', 'и1.png',  'й1.png', 'к1.png', 'л1.png', 'м1.png', 'н1.png',  'о1.png',
-                          'п1.png', 'р1.png',  'с1.png',  'т1.png', 'у1.png', 'ф1.png', 'х1.png',  'ц1.png',
-                          'ч1.png', 'ш1.png',  'щ1.png', 'э1.png', 'ю1.png', 'я1.png']
-
-
-def work_image(name):
-    if name != 'arrow.png':
-        fullname = os.path.join(os.path.dirname(__file__), 'data', name)
-        image = pygame.image.load(fullname)
-    else:
-        fullname = os.path.join(os.path.dirname(__file__), 'data', name)
-        image = pygame.image.load(fullname).convert_alpha()
-    return image
-
-
-def load_image(name, color_key=None):
-    fullname = os.path.join('data', name)
-    try:
-        image = pygame.image.load(fullname)
-    except pygame.error as message:
-        print('Не удаётся загрузить:', name)
-        raise SystemExit(message)
-    image = image.convert_alpha()
-    if color_key is not None:
-        if color_key is -1:
-            color_key = image.get_at((0, 0))
-        image.set_colorkey(color_key)
-    return image
-
-
-def load_sound(name, volume=1):
-    sound = pygame.mixer.Sound(os.path.join(sounds_folder, name))
-    sound.set_volume(volume)
-    return sound
-
-
-def terminate():
-    pygame.quit()
-    sys.exit()
 
 
 def start_screen():
@@ -110,12 +48,17 @@ def end_screen():
             if event.type == pygame.QUIT:
                 terminate()
             elif event.type == pygame.KEYDOWN or \
-                                    event.type == pygame.MOUSEBUTTONDOWN:
+                    event.type == pygame.MOUSEBUTTONDOWN:
                 terminate()
         pygame.display.flip()
 
 
-def new():
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+
+def distribution_pictures():
     global image_letter
     global picture1
     global picture2
@@ -146,9 +89,6 @@ def new():
             picture2 = random.choice(image_for_buttons_copy)
             picture1 = random.choice(image_for_buttons_copy)
     del alphabet[image_letter]
-
-sounds_folder = "sounds"
-new()
 
 
 class Letter(pygame.sprite.Sprite):
@@ -197,10 +137,11 @@ class Tile(pygame.sprite.Sprite):
         self.image = work_image(self.picture)
 
 
+distribution_pictures()
+
 pygame.mixer.music.load(str(path.join(path.dirname(__file__))) + "\music\\" + 'Yiruma - Because I Love You.mp3')
 pygame.mixer.music.set_volume(0.4)
 pygame.mixer.music.play(-1)
-
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Весёлая азбука")
@@ -219,7 +160,6 @@ cursor = pygame.sprite.Sprite(all_sprites)
 cursor.image = cursor_image
 cursor.rect = cursor.image.get_rect()
 pygame.mouse.set_visible(False)
-
 
 running = True
 number = 0
@@ -243,7 +183,7 @@ while running:
                 clock.tick(400)
                 del image_for_buttons[0]
                 if len(alphabet) != 0:
-                    new()
+                    distribution_pictures()
                     task.play()
                     all_sprites.update()
             else:
